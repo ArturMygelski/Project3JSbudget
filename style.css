@@ -1,78 +1,109 @@
+* {
+  box-sizing: border-box;
+}
 body {
-    background-image: url(https://i.stack.imgur.com/kb0Zm.jpg);
-    background-size: cover;
+  background-image: url(https://i.stack.imgur.com/kb0Zm.jpg);
+  background-size: cover;
 }
 .containerLogo {
-    width: 90%;
-    height: auto;
-    justify-content: center;
-    align-items: center;
-    padding: 14px;
+  width: 90%;
+  height: auto;
+  justify-content: center;
+  align-items: center;
+  padding: 14px;
 }
 .logo {
-    width: 100%;
-    height: 150px;
-    background: url("budzet.jpg") no-repeat center center;
-    background-size: 50%, 50%, contain;
-    display: flex;
-    box-sizing: border-box;
-    background-position:center;
-    }
-
-p1 {
-    margin:0 30%;
-    width: 80%;
-    display: flex;
-    padding: 14px;
-    font-size: larger;
-    align-self: center;
+  width: 100%;
+  height: 150px;
+  background: url("budzet.jpg") no-repeat center center;
+  background-size: 50%, 50%, contain;
 }
-p2 {
-    margin:0 40%;
-    display: flex;
-    padding: 14px;
-    font-size: larger;
-    align-self: center;
+.container-header {
+  display: flex;
+  justify-content: space-between;
+  float: left;
+  width: 100%;
+}
+.titleL,
+.titleR,
+.ballance {
+  display: flex;
+  padding: 14px;
+  font-size: xx-large;
+  font-weight: bold;
+  align-items: center;
+}
+.titleL {
+  float: left;
+  justify-content: end;
+  width: 50%;
+}
+.titleR {
+  float: right;
+  width: 40%;
+}
+
+.inner {
+  margin: 0 40%;
+  display: flex;
+  padding: 14px;
+  font-size: larger;
+  align-self: center;
 }
 .header {
-    padding: 14px;
-    border-bottom: 1px solid black;
-    text-align: center;
+  padding: 14px;
+  border-bottom: 1px solid black;
+  text-align: center;
 }
-.number, .result {
-    margin: 0 5px;
-    background-image: url(https://i.stack.imgur.com/kb0Zm.jpg);
-    background-size: 50%, 50%, contain;
+input,
+.expense-title,
+.income-title {
+  text-align: center;
 }
-.container {
-    flex-direction: column;
-    float: left;
-    box-sizing: border-box;
-    width: 100%;
+ul {
+  justify-content: center;
+  align-items: center;
 }
-.income, .expenses {
-    width: 50%;
-    border: 1px solid black;
-    box-sizing: border-box;
-    
+.number,
+.result,
+.totalExp {
+  margin: 0 5px;
+  border: none;
+  font-size: x-large;
 }
-.income {
-    float: left;
-    width: 50%;
+.incomes {
+  color: #41b941;
 }
 .expenses {
-    float: right;
-    width: 50%;;  
-}
-.footer {
-    padding-top: 80px;
-    justify-self: center;
-    text-align: center;
-    font-weight: bold;
+  color: #d72f2f;
 }
 
-.result {
-    border: none;
-    border-bottom: 1px solid black;
-    font-size: large;
+.container {
+  flex-direction: column;
+  float: left;
+  width: 100%;
+}
+.incomes,
+.expenses,
+.addInc,
+.addExp {
+  width: 50%;
+  border: 1px solid black;
+  padding: 10px;
+  float: left;
+}
+.footer {
+  padding-top: 80px;
+  justify-self: center;
+  text-align: center;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.ballance {
+  border: none;
+  display: flex;
+  left: 5em;
+  border-bottom: 1px solid black;
+  width: auto;
 }
