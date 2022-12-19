@@ -8,8 +8,6 @@ body {
 .containerLogo {
   width: 90%;
   height: auto;
-  justify-content: center;
-  align-items: center;
   padding: 14px;
 }
 .logo {
@@ -26,7 +24,9 @@ body {
 }
 .titleL,
 .titleR,
-.ballance {
+.ballance,
+.totalInc,
+.totalExp {
   display: flex;
   padding: 14px;
   font-size: xx-large;
@@ -47,12 +47,12 @@ body {
   margin: 0 40%;
   display: flex;
   padding: 14px;
-  font-size: larger;
+  font-size: 25px;
   align-self: center;
+  text-shadow: 1px 1px 1px white;
 }
 .header {
   padding: 14px;
-  border-bottom: 1px solid black;
   text-align: center;
 }
 input,
@@ -64,9 +64,13 @@ ul {
   justify-content: center;
   align-items: center;
 }
-.number,
-.result,
-.totalExp {
+.totalExp,
+.totalInc {
+  text-align: center;
+  justify-content: center;
+}
+.totalExp,
+.totalInc {
   margin: 0 5px;
   border: none;
   font-size: x-large;
@@ -92,6 +96,14 @@ ul {
   padding: 10px;
   float: left;
 }
+.addInc,
+.addExp {
+  font-size: 0.73em;
+}
+.reset {
+  justify-self: center;
+  align-self: center;
+}
 .footer {
   padding-top: 80px;
   justify-self: center;
@@ -106,4 +118,17 @@ ul {
   left: 5em;
   border-bottom: 1px solid black;
   width: auto;
+}
+.btn_delete {
+  width: 20px;
+  height: 20px;
+  border: red;
+  font-family: "Font Awesome 5 Free";
+  content: "\f1f8";
+}
+
+.btn_edit {
+  border: #41b941;
+  width: 20px;
+  height: 20px;
 }
