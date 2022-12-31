@@ -20,21 +20,26 @@
     <div class="containerLogo">
       <div class="logo"></div>
       <div class="container-header">
-        <span class="titleL">Możesz jeszcze wydać </span>
-        <p class="ballance">0</p>
+        <span id="ballance-positive" class="titleL">Możesz jeszcze wydać </span>
+        <span id="warning-ballance" class="titleL hidden"
+          >Przekroczyłeś budżet o
+        </span>
+        <p type="number" id="ballance" class="inplus">0</p>
         <span class="titleR">złotych</span>
       </div>
-      <i id="reset" class="fa-regular fa-snowplow"></i>
+      <button id="reset" style="font-weight: bold">Wyczyść budżet</button>
     </div>
     <div class="container">
       <div class="incomes">
         <div class="header">
-          <p class="inner" style="font-weight: bold">
-            Przychody: </p>
-          <p class="toalInc"></p>
+          <p class="inner" style="font-weight: bold">Przychody:</p>
+          <p class="totalInc"></p>
           <input type="text" id="income-title" placeholder="Przychód" />
-          <input type="number" id="income-amt" placeholder="0" />
+          <input type="number" id="income-amt" placeholder="0" min="0" />
           <i id="addInc" class="fa-regular fa-square-plus"></i>
+          <div id="warning-income" class="hidden">
+            Wartość nie może być pusta bądź ujemna
+          </div>
         </div>
 
         <div class="input">
@@ -44,14 +49,17 @@
 
       <div class="expenses">
         <div class="header">
-          <p class="inner" style="font-weight: bold">Wydatki: <p class="totalExp"></p></p>
+          <p class="inner" style="font-weight: bold">Wydatki:</p>
+          <p class="totalExp"></p>
           <input type="text" id="expense-title" placeholder="Wydatek" />
-          <input type="number" id="expense-amt" placeholder="0" />
+          <input type="number" id="expense-amt" placeholder="0" min="0" />
           <i id="addExp" class="fa-regular fa-square-plus"></i>
+          <div id="warning-expense" class="hidden">
+            Wartość nie może być pusta bądź ujemna
+          </div>
         </div>
         <div class="input">
           <ul class="list" id="expenses"></ul>
-         
         </div>
       </div>
     </div>

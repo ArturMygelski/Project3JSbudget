@@ -1,8 +1,12 @@
-const ballance = document.querySelector(".ballance.value");
+const ballance = document.querySelector("#ballance");
+const ballanceP = document.querySelector("#ballance-positive");
 const totalIncomes = document.querySelector(".totalInc");
 const totalExpenses = document.querySelector(".totalExp");
 const incomesList = document.querySelector("#incomes");
 const expensesList = document.querySelector("#expenses");
+const warningI = document.querySelector("#warning-income");
+const warningE = document.querySelector("#warning-expense");
+const warningB = document.querySelector("#warning-ballance");
 
 const incomeAdd = document.querySelector("#addInc");
 const incomeTitle = document.querySelector("#income-title");
@@ -10,202 +14,199 @@ const incomeAmt = document.querySelector("#income-amt");
 const expenseAdd = document.querySelector("#addExp");
 const expenseTitle = document.querySelector("#expense-title");
 const expenseAmt = document.querySelector("#expense-amt");
+const resetBtn = document.querySelector("#reset");
 
-var incomes = [];
-var expenses = [];
+let incomesArr = [];
+let expensesArr = [];
 
-incomeAdd.addEventListener("click", () => {
-  const newIncome = {
-    type: "income",
-    title: incomeTitle.value,
-    value: parseInt(incomeAmt.value),
-    id: Math.random(),
-  };
-  incomes.length = 0;
-  incomes.push(newIncome);
-  renderIncomes();
-});
+let incomesSum = 0;
+let expensesSum = 0;
 
-expenseAdd.addEventListener("click", () => {
-  const newExpense = {
-    type: "expense",
-    title: expenseTitle.value,
-    value: parseInt(expenseAmt.value),
-    id: Math.random(),
-  };
+let editedItem = null;
 
-  expenses.length = 0;
-  expenses.push(newExpense);
-  renderExpenses();
+function totalBallance() {
+  if (incomesSum - expensesSum < 0) {
+    ballanceP.classList.add("hidden");
+    warningB.classList.remove("hidden");
+    ballance.classList.add("negative");
+    ballance.classList.remove("inplus");
+  } else {
+    warningB.classList.add("hidden");
+    ballanceP.classList.remove("hidden");
+    ballance.classList.remove("negative");
+    ballance.classList.add("inplus");
+  }
+  console.log(ballance.value);
+}
 
-  console.log(expenseAdd);
-});
+const sumIncomes = () => {
+  incomesSum = incomesArr.reduce((prevValue, currentValue) => {
+    return prevValue + parseInt(currentValue.value);
+  }, 0);
+  totalIncomes.innerHTML = incomesSum;
+  ballance.innerHTML = incomesSum - expensesSum;
+};
+const sumExpenses = () => {
+  expensesSum = expensesArr.reduce((prevValue, currentValue) => {
+    return prevValue + parseInt(currentValue.value);
+  }, 0);
+  console.log(expensesArr);
+  totalExpenses.innerHTML = expensesSum;
+  ballance.innerHTML = incomesSum - expensesSum;
+};
+
+function updateIncomes(e) {
+  e.preventDefault();
+  if (!incomeAmt.value || incomeAmt.value < 0) {
+    warningI.classList.remove("hidden");
+    setTimeout(() => {
+      warningI.classList.add("hidden");
+    }, 1500);
+    document.getElementById("income-amt").value = "";
+  } else {
+    const newIncome = {
+      type: "income",
+      title: incomeTitle.value,
+      value: parseInt(incomeAmt.value),
+      id: Math.random(),
+    };
+    incomesArr.push(newIncome);
+    sumIncomes();
+    totalBallance();
+    renderIncomes();
+    document.getElementById("income-amt").value = "";
+    document.getElementById("income-title").value = "";
+    console.log(incomesSum - expensesSum);
+  }
+}
+function updateExpenses(e) {
+  e.preventDefault();
+  if (!expenseAmt.value || expenseAmt.value < 0) {
+    warningE.classList.remove("hidden");
+    setTimeout(() => {
+      warningE.classList.add("hidden");
+    }, 1500);
+    document.getElementById("expense-amt").value = "";
+  } else {
+    const newExpense = {
+      type: "expense",
+      title: expenseTitle.value,
+      value: parseInt(expenseAmt.value),
+      id: Math.random(),
+    };
+
+    expensesArr.push(newExpense);
+    sumExpenses();
+    renderExpenses();
+    totalBallance();
+    document.getElementById("expense-amt").value = "";
+    document.getElementById("expense-title").value = "";
+    console.log(incomesSum - expensesSum);
+  }
+}
+
+incomeAdd.addEventListener("click", updateIncomes);
+expenseAdd.addEventListener("click", updateExpenses);
 
 const renderIncomes = () => {
-  // incomesList.innerHTML = "";
-  incomes.forEach((income) => createElement(income));
-  console.log(incomes);
+  incomesList.innerHTML = "";
+  incomesArr.forEach((income) => createElement(income));
 };
 const renderExpenses = () => {
-  // expensesList.innerHTML = "";
-  expenses.forEach((expense) => createElement(expense));
+  expensesList.innerHTML = "";
+  expensesArr.forEach((expense) => createElement(expense));
 };
 
 const createElement = (item) => {
   const li = document.createElement("li");
   li.id = item.id;
   const p = document.createElement("p");
+  const buttonContainer = document.createElement("div");
+  const deleteBtn = document.createElement("button");
+  deleteBtn.addEventListener("click", deleteItem);
+  deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
+  deleteBtn.id = "btn_delete";
   p.innerText = `${item.title} :  ${item.value} PLN`;
-  const deletBtn = document.createElement("button");
-  deletBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
-  deletBtn.id = "btn_delete";
-  // incomes.length = 0;
 
   const editBtn = document.createElement("button");
+  editBtn.addEventListener("click", editIncomes);
   editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
   editBtn.id = "btn_edit";
+  buttonContainer.appendChild(deleteBtn);
+  buttonContainer.appendChild(editBtn);
   li.appendChild(p);
-  li.appendChild(deletBtn);
-  li.appendChild(editBtn);
+  li.appendChild(buttonContainer);
 
   if (item.type === "income") {
     incomesList.appendChild(li);
   } else {
     expensesList.appendChild(li);
   }
+
+  // deleteBtn.addEventListener("click", (e) => {
+  //   let targetId = e.target.parentNode.parentNode.parentNode.id;
+  //   incomesArr.getElementById.targetId((item) => item.remove());
+  //   e.target.parentNode.parentNode.parentNode.remove();
+  //   sumIncomes();
+  // });
 };
 
-//   editBtn.addEventListener("click", () => {
-//     editItem(item);
-
-//   deletBtn.addEventListener("click", () => {
-//     deleteItem(item);
+// const deleteItem = (index) => {
+//   const { incomesArr } = this.state;
+//   this.setState({
+//     incomesArr: incomesArr.filter((element, i) => {
+//       return i !== index;
+//     }),
 //   });
-// };
+// metoda 2
+function deleteItem(e) {
+  const li = e.target.closest("li");
+  const id = li.id;
+  incomesArr = incomesArr.filter(
+    (element) => String(element.id) !== String(id)
+  );
+  console.log("id", id);
+  console.log("incomesArr", incomesArr);
+  li.remove();
+  sumIncomes();
+}
 
-// var add = incomes.reduce(function (previousValue, currentValue) {
-//   return { value: previousValue.value + currentValue.value };
-// });
+function editIncomes(e) {
+  const li = e.target.closest("li");
+  const id = li.id;
 
-// incomes.map((item) => item.value).reduce((prev, next) => prev + next);
+  editItem = incomesArr.find((element) => String(element.id) === String(id));
 
+  incomeTitle.value = editItem.title;
+  editedItem = id;
+}
+
+//   let id = e.target.id;
+//   let title = item[id].title;
+//   let value = item[id].value;
+//   incomesArr.splice(id, 1);
+//   updateIncomes();
+//   item.title = title;
+//   item.value = value;
 // }
-// incomes.reduce((accumulator, object) => {
-//   return accumulator + object.value;
-// // }, 0);
 
-// const sum = incomes.reduce((acc, 0) => acc + parseInt(newIncome.value), 0);
+// editBtn.addEventListener("click", () => {
+//   let targetID = e.target.parentNode.parentNode.parentNode.id;
+//   editItem(item);
 
-let sum = 0;
+const resetAll = () => {
+  incomesArr = [];
+  expensesArr = [];
 
-incomes.forEach((element) => {
-  sum += parseInt(element.value);
+  incomesSum = 0;
+  expensesSum = 0;
+};
+
+resetBtn.addEventListener("click", () => {
+  resetAll();
+  sumIncomes();
+  sumExpenses();
+  totalBallance();
+  const listRemove = document.querySelectorAll("ul li");
+  listRemove.forEach((item) => item.remove());
 });
-
-console.log(sum);
-
-// reset.addEventListener("click", () => {
-//   var incomes = [];
-//   var expenses = [];
-//   renderIncomes();
-//   renderExpenses();
-// });
-// module.export = totalIncomes;
-
-// const calculateTotal("incomes");
-// totalExpenses = calculateTotal("expenses");
-// ballance = Math.abs(calculateBalance(incomes, expenses));
-// balance.innerHTML = "{balance}";
-// totalInccomes.innerHTML = "{totalInc}";
-// totalExppenses.innerHTML = "{totalExp}";
-
-//   clearElement([expensesList, incomesList]);
-// }
-
-// function calculateBalance(totalInc, totalExp) {
-//   return totalInc - totalExp;
-// }
-
-// {
-
-// function deleteOrEdit(event) {
-//   const targetBtn = event.target;
-
-//   const entry = targetBtn.parentNode;
-
-// if (targetBtn.id == DELETE) {
-//   deleteEntry(entry);
-// } else if (targetBtn.id == EDIT) {
-//   editEntry(entry);
-// }
-// }
-
-// function deleteEntry(entry) {
-//   ENTRY_LIST.splice(entry.id, 1);
-
-//   clearElement([expenseList, incomeList]);
-
-// function clearElement(elements) {
-//   elements.forEach((element) => {
-//     element.innerHTML = "";
-//   });
-// }
-
-// function calculateTotal(type, list) {
-//   let sum = 0;
-
-//   list.forEach((entry) => {
-//     if (entry.type == type) {
-//       sum += entry.amount;
-//     }
-//   });
-
-//   return sum;
-// }
-
-// function calculateBalance(totalInc, totalExp) {
-//   return totalInc - totalExp;
-// }
-
-// buttonEdit.addEventListener("click", () => {
-//   editItem(element);
-// });
-
-// buttonDelete.addEventListener("click", () => {
-//   deleteItem(element);
-// // });
-
-// // console.log(listItem);
-
-// // module.export = createElement;
-
-// // const editItem = (element) => {
-// //   console.log(element);
-// // };
-
-// // const deleteItem = (element) => {
-// //   console.log(element);
-// //   inputInc.forEach((item) => console.log(item.id === element.id));
-// // };
-
-// // export default listInc;
-
-// // const totalInc = () [
-// //     {title:
-
-// //     }
-// // ]
-
-// // const budgetSum = () => {
-
-// //       const totalInc = income.find((item) => item.code === selectedValue);
-// //       const totalExp = expenses.find((item) => item.code === selectedValue);
-// //       result.value = (totalInc.value - totalExp.value).toFixed(2);
-// //     }
-// //     .catch((err) => console.log(err));
-// // const listInc = document.querySelector("newItem");
-// // const addInc = document.querySelector("addInc");
-// // const income = document.createElement("income");
-
-// // const totalInc = [];
-// // const totalExp = []
