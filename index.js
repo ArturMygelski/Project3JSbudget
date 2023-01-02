@@ -36,7 +36,6 @@ function totalBallance() {
     ballance.classList.remove("negative");
     ballance.classList.add("inplus");
   }
-  console.log(ballance.value);
 }
 
 const sumIncomes = () => {
@@ -50,12 +49,11 @@ const sumExpenses = () => {
   expensesSum = expensesArr.reduce((prevValue, currentValue) => {
     return prevValue + parseInt(currentValue.value);
   }, 0);
-  console.log(expensesArr);
   totalExpenses.innerHTML = expensesSum;
   ballance.innerHTML = incomesSum - expensesSum;
 };
 
-function updateIncomes(e) {
+function addNewIncomes(e) {
   e.preventDefault();
   if (!incomeAmt.value || incomeAmt.value < 0) {
     warningI.classList.remove("hidden");
@@ -76,10 +74,9 @@ function updateIncomes(e) {
     renderIncomes();
     document.getElementById("income-amt").value = "";
     document.getElementById("income-title").value = "";
-    console.log(incomesSum - expensesSum);
   }
 }
-function updateExpenses(e) {
+function addNewExpenses(e) {
   e.preventDefault();
   if (!expenseAmt.value || expenseAmt.value < 0) {
     warningE.classList.remove("hidden");
@@ -105,8 +102,8 @@ function updateExpenses(e) {
   }
 }
 
-incomeAdd.addEventListener("click", updateIncomes);
-expenseAdd.addEventListener("click", updateExpenses);
+incomeAdd.addEventListener("click", addNewIncomes);
+expenseAdd.addEventListener("click", addNewExpenses);
 
 const renderIncomes = () => {
   incomesList.innerHTML = "";
@@ -120,27 +117,36 @@ const renderExpenses = () => {
 const createElement = (item) => {
   const li = document.createElement("li");
   li.id = item.id;
+  const titleParagraph = document.createElement("span");
+  const valueParagraph = document.createElement("span");
   const p = document.createElement("p");
   const buttonContainer = document.createElement("div");
   const deleteBtn = document.createElement("button");
-  deleteBtn.addEventListener("click", deleteItem);
+  deleteBtn.addEventListener("click", () => deleteItem(item.type));
   deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
   deleteBtn.id = "btn_delete";
-  p.innerText = `${item.title} :  ${item.value} PLN`;
+  titleParagraph.innerText = `${item.title}`;
+  valueParagraph.innerText = `${item.value} PLN`;
+  p.innerText = (titleParagraph, valueParagraph);
 
   const editBtn = document.createElement("button");
-  editBtn.addEventListener("click", editIncomes);
+
   editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
   editBtn.id = "btn_edit";
   buttonContainer.appendChild(deleteBtn);
   buttonContainer.appendChild(editBtn);
-  li.appendChild(p);
+  li.appendChild(titleParagraph);
+  li.appendChild(valueParagraph);
   li.appendChild(buttonContainer);
 
   if (item.type === "income") {
     incomesList.appendChild(li);
+    editBtn.addEventListener("click", () =>
+      editItem(titleParagraph, valueParagraph)
+    );
   } else {
     expensesList.appendChild(li);
+    editBtn.addEventListener("click", editItem);
   }
 
   // deleteBtn.addEventListener("click", (e) => {
@@ -151,48 +157,51 @@ const createElement = (item) => {
   // });
 };
 
-// const deleteItem = (index) => {
-//   const { incomesArr } = this.state;
-//   this.setState({
-//     incomesArr: incomesArr.filter((element, i) => {
-//       return i !== index;
-//     }),
-//   });
-// metoda 2
-function deleteItem(e) {
-  const li = e.target.closest("li");
-  const id = li.id;
-  incomesArr = incomesArr.filter(
-    (element) => String(element.id) !== String(id)
-  );
-  console.log("id", id);
-  console.log("incomesArr", incomesArr);
-  li.remove();
-  sumIncomes();
-}
-
-function editIncomes(e) {
+function deleteItem(e, itemType) {
   const li = e.target.closest("li");
   const id = li.id;
 
-  editItem = incomesArr.find((element) => String(element.id) === String(id));
-
-  incomeTitle.value = editItem.title;
-  editedItem = id;
+  if (itemType === "income") {
+    incomesArr = incomesArr.filter(
+      (element) => String(element.id) !== String(id)
+    );
+    li.remove();
+    // renderIncomes();
+    sumIncomes();
+    console.log(li, "li");
+  } else {
+    expensesArr = expensesArr.filter(
+      (element) => String(element.id) !== String(id)
+    );
+    li.remove();
+    // renderExpenses();
+    sumExpenses();
+  }
 }
 
-//   let id = e.target.id;
-//   let title = item[id].title;
-//   let value = item[id].value;
-//   incomesArr.splice(id, 1);
-//   updateIncomes();
-//   item.title = title;
-//   item.value = value;
-// }
+function editItem(e, itemType) {
+  const li = e.target.closest("li");
+  const id = li.id;
+  if (itemType === "income") {
+    // incomeTitle.value = editItem.title;
+    // incomeAmt.value = editItem.value;
+    incomesList.appendChild(li);
+    editBtn.addEventListener("click", () =>
+      editIncomes(titleParagraph, valueParagraph)
+    );
 
-// editBtn.addEventListener("click", () => {
-//   let targetID = e.target.parentNode.parentNode.parentNode.id;
-//   editItem(item);
+    // );
+    // renderIncomes();
+    // sumIncomes();
+  } else {
+    editBtn.addEventListener("click", () =>
+      editExpenses(titleParagraph, valueParagraph)
+    );
+    expensesList.appendChild(li);
+    // renderExpenses();
+    // sumExpenses();
+  }
+}
 
 const resetAll = () => {
   incomesArr = [];
