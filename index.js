@@ -122,7 +122,7 @@ const createElement = (item) => {
   const p = document.createElement("p");
   const buttonContainer = document.createElement("div");
   const deleteBtn = document.createElement("button");
-  deleteBtn.addEventListener("click", () => deleteItem(item.type));
+  deleteBtn.addEventListener("click", (event) => deleteItem(event, item.type));
   deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
   deleteBtn.id = "btn_delete";
   titleParagraph.innerText = `${item.title}`;
@@ -130,6 +130,11 @@ const createElement = (item) => {
   p.innerText = (titleParagraph, valueParagraph);
 
   const editBtn = document.createElement("button");
+  const saveBtn = document.createElement("button");
+  saveBtn.innerText = "save";
+  const cancelBtn = document.createElement("button");
+  cancelBtn.innerText = "anuluj";
+  cancelBtn.addEventListener("click", discardChanges);
 
   editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
   editBtn.id = "btn_edit";
@@ -139,23 +144,37 @@ const createElement = (item) => {
   li.appendChild(valueParagraph);
   li.appendChild(buttonContainer);
 
+  editBtn.addEventListener("click", () => {
+    li.appendChild(saveBtn);
+    li.appendChild(cancelBtn);
+    editBtn.style.display = "none";
+    deleteBtn.style.display = "none";
+    titleParagraph.contentEditable = "true";
+    valueParagraph.contentEditable = "true";
+  });
+
   if (item.type === "income") {
     incomesList.appendChild(li);
-    editBtn.addEventListener("click", () =>
-      editItem(titleParagraph, valueParagraph)
-    );
   } else {
     expensesList.appendChild(li);
-    editBtn.addEventListener("click", editItem);
   }
-
-  // deleteBtn.addEventListener("click", (e) => {
-  //   let targetId = e.target.parentNode.parentNode.parentNode.id;
-  //   incomesArr.getElementById.targetId((item) => item.remove());
-  //   e.target.parentNode.parentNode.parentNode.remove();
-  //   sumIncomes();
-  // });
+  function discardChanges() {
+    editBtn.style.display = "inline-block";
+    deleteBtn.style.display = "inline-block";
+    titleParagraph.contentEditable = "false";
+    valueParagraph.contentEditable = "false";
+    li.removeChild(saveBtn);
+    li.removeChild(cancelBtn);
+  }
 };
+function saveButton() {}
+
+// deleteBtn.addEventListener("click", (e) => {
+//   let targetId = e.target.parentNode.parentNode.parentNode.id;
+//   incomesArr.getElementById.targetId((item) => item.remove());
+//   e.target.parentNode.parentNode.parentNode.remove();
+//   sumIncomes();
+// });
 
 function deleteItem(e, itemType) {
   const li = e.target.closest("li");
@@ -165,16 +184,14 @@ function deleteItem(e, itemType) {
     incomesArr = incomesArr.filter(
       (element) => String(element.id) !== String(id)
     );
-    li.remove();
-    // renderIncomes();
+    renderIncomes();
     sumIncomes();
     console.log(li, "li");
   } else {
     expensesArr = expensesArr.filter(
       (element) => String(element.id) !== String(id)
     );
-    li.remove();
-    // renderExpenses();
+    renderExpenses();
     sumExpenses();
   }
 }
@@ -186,9 +203,8 @@ function editItem(e, itemType) {
     // incomeTitle.value = editItem.title;
     // incomeAmt.value = editItem.value;
     incomesList.appendChild(li);
-    editBtn.addEventListener("click", () =>
-      editIncomes(titleParagraph, valueParagraph)
-    );
+    // editBtn.addEventListener("click", () =>
+    //   editIncomes(titleParagraph, valueParagraph)
 
     // );
     // renderIncomes();

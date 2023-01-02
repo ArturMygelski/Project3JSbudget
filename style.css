@@ -169,12 +169,20 @@ ul {
 }
 
 li {
+  position: relative;
   list-style-type: circle;
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 70%;
   padding: 14px;
+}
+.editLi {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
 }
 
 @media screen and (min-width: 1200px) {
