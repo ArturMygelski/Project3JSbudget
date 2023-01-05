@@ -241,6 +241,7 @@ function deleteItem(e, itemType) {
     );
     renderExpenses();
     sumExpenses();
+    totalBallance();
   }
 }
 
