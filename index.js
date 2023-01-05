@@ -98,7 +98,6 @@ function addNewExpenses(e) {
     totalBallance();
     document.getElementById("expense-amt").value = "";
     document.getElementById("expense-title").value = "";
-    console.log(incomesSum - expensesSum);
   }
 }
 
@@ -119,62 +118,112 @@ const createElement = (item) => {
   li.id = item.id;
   const titleParagraph = document.createElement("span");
   const valueParagraph = document.createElement("span");
-  const p = document.createElement("p");
+  const currencyParagraph = document.createElement("span");
   const buttonContainer = document.createElement("div");
+  buttonContainer.className = "buttonContainer";
+  titleParagraph.innerText = `${item.title}`;
+  valueParagraph.innerText = `${item.value}`;
+  currencyParagraph.innerText = `PLN`;
+  li.appendChild(titleParagraph);
+  li.appendChild(valueParagraph);
+  li.appendChild(currencyParagraph);
+  li.appendChild(buttonContainer);
+
   const deleteBtn = document.createElement("button");
   deleteBtn.addEventListener("click", (event) => deleteItem(event, item.type));
   deleteBtn.innerHTML = '<i class="fa-solid fa-trash"></i>';
   deleteBtn.id = "btn_delete";
-  titleParagraph.innerText = `${item.title}`;
-  valueParagraph.innerText = `${item.value} PLN`;
-  p.innerText = (titleParagraph, valueParagraph);
 
-  const editBtn = document.createElement("button");
   const saveBtn = document.createElement("button");
-  saveBtn.innerText = "save";
+  saveBtn.innerHTML = '<i class="fa-solid fa-floppy-disk"></i>';
+  saveBtn.id = "btn_save";
+  saveBtn.addEventListener("click", (event) => saveChanges(event, item.type));
+
   const cancelBtn = document.createElement("button");
   cancelBtn.innerText = "anuluj";
-  cancelBtn.addEventListener("click", discardChanges);
+  cancelBtn.id = "btn_cancel";
+  cancelBtn.addEventListener("click", (event) =>
+    discardChanges(event, item.type)
+  );
 
+  const editBtn = document.createElement("button");
   editBtn.innerHTML = '<i class="fa-solid fa-pen-to-square"></i>';
   editBtn.id = "btn_edit";
+
   buttonContainer.appendChild(deleteBtn);
   buttonContainer.appendChild(editBtn);
-  li.appendChild(titleParagraph);
-  li.appendChild(valueParagraph);
-  li.appendChild(buttonContainer);
 
   editBtn.addEventListener("click", () => {
     li.appendChild(saveBtn);
     li.appendChild(cancelBtn);
     editBtn.style.display = "none";
     deleteBtn.style.display = "none";
+    currencyParagraph.style.display = "none";
+    titleParagraph.contentEditable = "true";
+    titleParagraph.classList.add("editLi");
+    valueParagraph.contentEditable = "true";
+    valueParagraph.classList.add("editLi");
+  });
+
+  () => {
+    li.appendChild(saveBtn);
+    li.appendChild(cancelBtn);
+    editBtn.style.display = "none";
+    deleteBtn.style.display = "none";
     titleParagraph.contentEditable = "true";
     valueParagraph.contentEditable = "true";
-  });
+  };
 
   if (item.type === "income") {
     incomesList.appendChild(li);
   } else {
     expensesList.appendChild(li);
   }
-  function discardChanges() {
-    editBtn.style.display = "inline-block";
-    deleteBtn.style.display = "inline-block";
+
+  function discardChanges(e, itemType) {
+    const li = e.target.closest("li");
+    const editedItem =
+      itemType === "income"
+        ? incomesArr.find((element) => String(element.id) === String(li.id))
+        : expensesArr.find((element) => String(element.id) === String(li.id));
+    editBtn.style.display = "flex";
+    deleteBtn.style.display = "flex";
+    currencyParagraph.style.display = "flex";
     titleParagraph.contentEditable = "false";
+    titleParagraph.innerText = editedItem.title;
     valueParagraph.contentEditable = "false";
+    valueParagraph.innerText = editedItem.value;
     li.removeChild(saveBtn);
     li.removeChild(cancelBtn);
+    titleParagraph.classList.remove("editLi");
+    valueParagraph.classList.remove("editLi");
+  }
+
+  const _updateArray = (li, arr) => {
+    const editedIndex = arr.findIndex(
+      (element) => String(element.id) === String(li.id)
+    );
+
+    arr[editedIndex].title = titleParagraph.innerText;
+    arr[editedIndex].value = valueParagraph.innerText;
+  };
+
+  function saveChanges(e, itemType) {
+    const li = e.target.closest("li");
+
+    if (itemType === "income") {
+      _updateArray(li, incomesArr);
+      renderIncomes();
+      sumIncomes();
+      totalBallance();
+    } else {
+      _updateArray(li, expensesArr);
+      renderExpenses();
+      sumExpenses();
+      totalBallance();
+    }
   }
 };
-function saveButton() {}
-
-// deleteBtn.addEventListener("click", (e) => {
-//   let targetId = e.target.parentNode.parentNode.parentNode.id;
-//   incomesArr.getElementById.targetId((item) => item.remove());
-//   e.target.parentNode.parentNode.parentNode.remove();
-//   sumIncomes();
-// });
 
 function deleteItem(e, itemType) {
   const li = e.target.closest("li");
@@ -186,7 +235,6 @@ function deleteItem(e, itemType) {
     );
     renderIncomes();
     sumIncomes();
-    console.log(li, "li");
   } else {
     expensesArr = expensesArr.filter(
       (element) => String(element.id) !== String(id)
@@ -200,22 +248,19 @@ function editItem(e, itemType) {
   const li = e.target.closest("li");
   const id = li.id;
   if (itemType === "income") {
-    // incomeTitle.value = editItem.title;
-    // incomeAmt.value = editItem.value;
+    editBtn.addEventListener("click", () =>
+      editIncomes(titleParagraph, valueParagraph)
+    );
     incomesList.appendChild(li);
-    // editBtn.addEventListener("click", () =>
-    //   editIncomes(titleParagraph, valueParagraph)
-
-    // );
-    // renderIncomes();
-    // sumIncomes();
+    renderIncomes();
+    sumIncomes();
   } else {
     editBtn.addEventListener("click", () =>
       editExpenses(titleParagraph, valueParagraph)
     );
     expensesList.appendChild(li);
-    // renderExpenses();
-    // sumExpenses();
+    renderExpenses();
+    sumExpenses();
   }
 }
 
