@@ -1,12 +1,13 @@
 const ballance = document.querySelector("#ballance");
-const ballanceP = document.querySelector("#ballance-positive");
+const ballancePositive = document.querySelector("#ballance-positive");
+const ballanceZero = document.querySelector("#ballance-zero");
 const totalIncomes = document.querySelector(".totalInc");
 const totalExpenses = document.querySelector(".totalExp");
 const incomesList = document.querySelector("#incomes");
 const expensesList = document.querySelector("#expenses");
-const warningI = document.querySelector("#warning-income");
-const warningE = document.querySelector("#warning-expense");
-const warningB = document.querySelector("#warning-ballance");
+const warningInc = document.querySelector("#warning-income");
+const warningExp = document.querySelector("#warning-expense");
+const warningBlnc = document.querySelector("#warning-ballance");
 
 const incomeAdd = document.querySelector("#addInc");
 const incomeTitle = document.querySelector("#income-title");
@@ -24,19 +25,26 @@ let expensesSum = 0;
 
 let editedItem = null;
 
-function totalBallance() {
+const totalBallance = () => {
   if (incomesSum - expensesSum < 0) {
-    ballanceP.classList.add("hidden");
-    warningB.classList.remove("hidden");
+    ballancePositive.classList.add("hidden");
+    warningBlnc.classList.remove("hidden");
     ballance.classList.add("negative");
     ballance.classList.remove("inplus");
-  } else {
-    warningB.classList.add("hidden");
-    ballanceP.classList.remove("hidden");
+    ballanceZero.classList.add("hidden");
+  } else if (incomesSum - expensesSum > 0) {
+    ballanceZero.classList.add("hidden");
+    warningBlnc.classList.add("hidden");
+    ballancePositive.classList.remove("hidden");
     ballance.classList.remove("negative");
     ballance.classList.add("inplus");
+  } else if (incomesSum - expensesSum === 0) {
+    ballanceZero.classList.remove("hidden");
+    warningBlnc.classList.add("hidden");
+    ballancePositive.classList.add("hidden");
   }
-}
+};
+totalBallance();
 
 const sumIncomes = () => {
   incomesSum = incomesArr.reduce((prevValue, currentValue) => {
@@ -53,13 +61,13 @@ const sumExpenses = () => {
   ballance.innerHTML = incomesSum - expensesSum;
 };
 
-function addNewIncomes(e) {
+const addNewIncomes = (e) => {
   e.preventDefault();
-  if (!incomeAmt.value || incomeAmt.value < 0) {
-    warningI.classList.remove("hidden");
+  if (!incomeTitle.value || incomeAmt.value < 0) {
+    warningInc.classList.remove("hidden");
     setTimeout(() => {
-      warningI.classList.add("hidden");
-    }, 1500);
+      warningInc.classList.add("hidden");
+    }, 3000);
     document.getElementById("income-amt").value = "";
   } else {
     const newIncome = {
@@ -75,14 +83,14 @@ function addNewIncomes(e) {
     document.getElementById("income-amt").value = "";
     document.getElementById("income-title").value = "";
   }
-}
-function addNewExpenses(e) {
+};
+const addNewExpenses = (e) => {
   e.preventDefault();
-  if (!expenseAmt.value || expenseAmt.value < 0) {
-    warningE.classList.remove("hidden");
+  if (!expenseTitle.value || expenseAmt.value < 0) {
+    warningExp.classList.remove("hidden");
     setTimeout(() => {
-      warningE.classList.add("hidden");
-    }, 1500);
+      warningExp.classList.add("hidden");
+    }, 3000);
     document.getElementById("expense-amt").value = "";
   } else {
     const newExpense = {
@@ -99,7 +107,7 @@ function addNewExpenses(e) {
     document.getElementById("expense-amt").value = "";
     document.getElementById("expense-title").value = "";
   }
-}
+};
 
 incomeAdd.addEventListener("click", addNewIncomes);
 expenseAdd.addEventListener("click", addNewExpenses);
@@ -140,7 +148,7 @@ const createElement = (item) => {
   saveBtn.addEventListener("click", (event) => saveChanges(event, item.type));
 
   const cancelBtn = document.createElement("button");
-  cancelBtn.innerText = "anuluj";
+  cancelBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
   cancelBtn.id = "btn_cancel";
   cancelBtn.addEventListener("click", (event) =>
     discardChanges(event, item.type)
@@ -180,7 +188,7 @@ const createElement = (item) => {
     expensesList.appendChild(li);
   }
 
-  function discardChanges(e, itemType) {
+  const discardChanges = (e, itemType) => {
     const li = e.target.closest("li");
     const editedItem =
       itemType === "income"
@@ -197,9 +205,9 @@ const createElement = (item) => {
     li.removeChild(cancelBtn);
     titleParagraph.classList.remove("editLi");
     valueParagraph.classList.remove("editLi");
-  }
+  };
 
-  const _updateArray = (li, arr) => {
+  const updateArray = (li, arr) => {
     const editedIndex = arr.findIndex(
       (element) => String(element.id) === String(li.id)
     );
@@ -208,24 +216,38 @@ const createElement = (item) => {
     arr[editedIndex].value = valueParagraph.innerText;
   };
 
-  function saveChanges(e, itemType) {
+  const saveChanges = (e, itemType) => {
     const li = e.target.closest("li");
-
-    if (itemType === "income") {
-      _updateArray(li, incomesArr);
-      renderIncomes();
-      sumIncomes();
-      totalBallance();
+    const ul = e.target.closest("ul");
+    e.preventDefault();
+    if (!titleParagraph.value || valueParagraph.value < 0) {
+      const warningPOP = document.createElement("div");
+      warningPOP.innerText =
+        "Wprowadź zmiany, Wartość nie może być pusta bądź ujemna";
+      warningPOP.classList.add("warning");
+      ul.classList.add("ul_warn");
+      li.appendChild(warningPOP);
+      setTimeout(() => {
+        li.removeChild(warningPOP);
+        ul.classList.remove("ul_warn");
+      }, 4000);
     } else {
-      _updateArray(li, expensesArr);
-      renderExpenses();
-      sumExpenses();
-      totalBallance();
+      if (itemType === "income") {
+        updateArray(li, incomesArr);
+        renderIncomes();
+        sumIncomes();
+        totalBallance();
+      } else {
+        updateArray(li, expensesArr);
+        renderExpenses();
+        sumExpenses();
+        totalBallance();
+      }
     }
-  }
+  };
 };
 
-function deleteItem(e, itemType) {
+const deleteItem = (e, itemType) => {
   const li = e.target.closest("li");
   const id = li.id;
 
@@ -243,9 +265,9 @@ function deleteItem(e, itemType) {
     sumExpenses();
     totalBallance();
   }
-}
+};
 
-function editItem(e, itemType) {
+const editItem = (e, itemType) => {
   const li = e.target.closest("li");
   const id = li.id;
   if (itemType === "income") {
@@ -263,7 +285,7 @@ function editItem(e, itemType) {
     renderExpenses();
     sumExpenses();
   }
-}
+};
 
 const resetAll = () => {
   incomesArr = [];

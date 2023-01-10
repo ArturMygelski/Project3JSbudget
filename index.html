@@ -20,24 +20,28 @@
     <div class="containerLogo">
       <div class="logo"></div>
       <div class="container-header">
-        <span id="ballance-positive" class="titleL">Możesz jeszcze wydać </span>
-        <span id="warning-ballance" class="titleL hidden"
-          >Przekroczyłeś budżet o
+        <span id="ballance-positive" class="titleL hidden"
+          >Możesz jeszcze wydać
         </span>
-        <p type="number" id="ballance" class="inplus">0</p>
+        <span id="warning-ballance" class="titleL hidden"
+          >Bilans jest ujemny. <br />
+          Jesteś na minusie
+        </span>
+        <span id="ballance-zero" class="titleL">Bilans wynosi</span>
+        <p type="number" id="ballance" class="negative">0</p>
         <span class="titleR">złotych</span>
       </div>
-      <button id="reset" style="font-weight: bold">Wyczyść budżet</button>
+      <button id="reset">Wyczyść budżet</button>
     </div>
     <div class="container">
       <div class="incomes">
         <div class="header">
-          <p class="inner" style="font-weight: bold">Przychody:</p>
+          <p class="inner">Przychody:</p>
           <p class="totalInc">0</p>
           <input type="text" id="income-title" placeholder="Przychód" />
           <input type="number" id="income-amt" placeholder="0" min="0" />
           <i id="addInc" class="fa-regular fa-square-plus"></i>
-          <div id="warning-income" class="hidden">
+          <div id="warning-income" class="hidden warning">
             Wartość nie może być pusta bądź ujemna
           </div>
         </div>
@@ -49,12 +53,12 @@
 
       <div class="expenses">
         <div class="header">
-          <p class="inner" style="font-weight: bold">Wydatki:</p>
+          <p class="inner">Wydatki:</p>
           <p class="totalExp">0</p>
           <input type="text" id="expense-title" placeholder="Wydatek" />
           <input type="number" id="expense-amt" placeholder="0" min="0" />
           <i id="addExp" class="fa-regular fa-square-plus"></i>
-          <div id="warning-expense" class="hidden">
+          <div id="warning-expense" class="hidden warning">
             Wartość nie może być pusta bądź ujemna
           </div>
         </div>
