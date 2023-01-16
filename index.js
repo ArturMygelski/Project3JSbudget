@@ -221,7 +221,15 @@ const createElement = (item) => {
     const li = e.target.closest("li");
     const ul = e.target.closest("ul");
     e.preventDefault();
-    if (!titleParagraph.value || valueParagraph.value < 0) {
+    if (
+      !editedItem.title.value === titleParagraph.value ||
+      editedItem.value === valueParagraph.value
+    ) {
+      discardChanges();
+    } else if (
+      $("editedItem.title").text().length == 0 ||
+      editedItem.value < 0
+    ) {
       const warningPOP = document.createElement("div");
       warningPOP.innerText =
         "Wprowadź zmiany, Wartość nie może być pusta bądź ujemna";
