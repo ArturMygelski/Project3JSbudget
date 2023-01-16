@@ -44,6 +44,7 @@ const totalBallance = () => {
     ballancePositive.classList.add("hidden");
   }
 };
+
 totalBallance();
 
 const sumIncomes = () => {
