@@ -64,7 +64,7 @@ const sumExpenses = () => {
 
 const addNewIncomes = (e) => {
   e.preventDefault();
-  if (!incomeTitle.value || incomeAmt.value < 0) {
+  if (!incomeTitle.value || incomeAmt.value <= 0) {
     warningInc.classList.remove("hidden");
     setTimeout(() => {
       warningInc.classList.add("hidden");
@@ -87,7 +87,7 @@ const addNewIncomes = (e) => {
 };
 const addNewExpenses = (e) => {
   e.preventDefault();
-  if (!expenseTitle.value || expenseAmt.value < 0) {
+  if (!expenseTitle.value || expenseAmt.value <= 0) {
     warningExp.classList.remove("hidden");
     setTimeout(() => {
       warningExp.classList.add("hidden");
@@ -221,15 +221,16 @@ const createElement = (item) => {
     const li = e.target.closest("li");
     const ul = e.target.closest("ul");
     e.preventDefault();
+    const editedItem =
+      itemType === "income"
+        ? incomesArr.find((element) => String(element.id) === String(li.id))
+        : expensesArr.find((element) => String(element.id) === String(li.id));
     if (
-      !editedItem.title.value === titleParagraph.value ||
+      !editedItem.title === titleParagraph.value ||
       editedItem.value === valueParagraph.value
     ) {
       discardChanges();
-    } else if (
-      $("editedItem.title").text().length == 0 ||
-      editedItem.value < 0
-    ) {
+    } else if (editedItem.title.length == 0 || editedItem.value < 0) {
       const warningPOP = document.createElement("div");
       warningPOP.innerText =
         "Wprowadź zmiany, Wartość nie może być pusta bądź ujemna";
