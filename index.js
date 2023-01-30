@@ -47,6 +47,12 @@ const totalBallance = () => {
 
 totalBallance();
 
+const preventMinus = (e) => {
+  if (/[-]/.test(e.key)) {
+    e.preventDefault();
+  }
+};
+
 const sumIncomes = () => {
   incomesSum = incomesArr.reduce((prevValue, currentValue) => {
     return prevValue + parseInt(currentValue.value);
@@ -172,6 +178,8 @@ const createElement = (item) => {
     titleParagraph.classList.add("editLi");
     valueParagraph.contentEditable = "true";
     valueParagraph.classList.add("editLi");
+    // valueParagraph.type = number;
+    onkeydown = preventMinus;
   });
 
   () => {
@@ -225,12 +233,23 @@ const createElement = (item) => {
       itemType === "income"
         ? incomesArr.find((element) => String(element.id) === String(li.id))
         : expensesArr.find((element) => String(element.id) === String(li.id));
+
+    console.log("valueParagraph.value", valueParagraph.innerText);
+    console.log(
+      "Number(valueParagraph.value)",
+      Number(valueParagraph.innerText)
+    );
+
     if (
-      !editedItem.title === titleParagraph.value ||
-      editedItem.value === valueParagraph.value
+      !editedItem.title === titleParagraph.innerText ||
+      editedItem.value === valueParagraph.innerText ||
+      item.title.length == 0
     ) {
       discardChanges();
-    } else if (editedItem.title.length == 0 || editedItem.value < 0) {
+    } else if (
+      Number(valueParagraph.innerText) <= 0 ||
+      isNaN(Number(valueParagraph.innerText))
+    ) {
       const warningPOP = document.createElement("div");
       warningPOP.innerText =
         "Wprowadź zmiany, Wartość nie może być pusta bądź ujemna";
@@ -241,6 +260,7 @@ const createElement = (item) => {
         li.removeChild(warningPOP);
         ul.classList.remove("ul_warn");
       }, 4000);
+      discardChanges();
     } else {
       if (itemType === "income") {
         updateArray(li, incomesArr);
@@ -254,6 +274,8 @@ const createElement = (item) => {
         totalBallance();
       }
     }
+    console.log(editedItem.title.length);
+    console.log(editedItem.value);
   };
 };
 
